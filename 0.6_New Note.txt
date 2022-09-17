@@ -1,0 +1,6 @@
+title 0.6_New Note
+
+note left of Browser: When event handler receives new note input from user, the new notes is added to the list and rendered to the page
+note left of Browser: Browser sends the new note to the server in JSON format
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+Server->Browser: Respond with 201. Send notification that "note created" in JSON format
