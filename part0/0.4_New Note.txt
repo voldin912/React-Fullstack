@@ -1,0 +1,16 @@
+title New Note
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+note left of Browser: Browser sends user's note input to server after user submits the note
+Server->Browser: Request for GET request for https://studies.cs.helsinki.fi/exampleapp/notes
+note right of Server: Server receives the data and does URL redirect
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+Server->Browser: notes.html
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server->Browser: main.js
+note left of Browser: Browser executes main.js and requests json data from server
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server->Browser: [{"content":"dfgdfhfdhgf","date":"2022-09-12T15:42:30.370Z"},...]
+note left of Browser: Browser handles json data and displays the data to user interface
