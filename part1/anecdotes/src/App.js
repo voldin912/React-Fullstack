@@ -2,7 +2,26 @@
 import './App.css';
 import { useState } from 'react'
 
-function App() {
+const AnecdoteDisplay = (props) => {
+    const {anecdote, point} = props
+    return (
+      <>
+      {anecdote}
+      <p>has {point} votes</p>
+      </>
+    )
+}
+
+const Button = (props)  => {
+  const {text, handleClick} = props
+  return ( 
+    <button onClick = {handleClick}>{text}</button>
+  )
+}
+
+
+const App = () => {
+
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -13,15 +32,32 @@ function App() {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ]
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState({
+    0:0,1:0,2:0,3:0,4:0,5:0,6:0
+  })
+  const addVote = () => {
+    const copy  = {...points}
+    copy[selected] += 1
+    setPoints(copy)
+  }
   const nextAnecdotes = () => {
     const randomNum = Math.floor(Math.random() * 7);
     setSelected(randomNum)
   }
+  const findMaxVote = () => {
+    const voteArr = Object.values(points)
+    const maxArrKey = Object.keys(points).find(key => points[key] === Math.max(...voteArr))
+    return maxArrKey
+  }
+  const maxVoteResult = findMaxVote()
   return (
     <div>
-      {anecdotes[selected]}
-      <br/>
-      <button onClick={nextAnecdotes}>next anecdote</button>
+      <h1>Anecdote of the day</h1>
+      <AnecdoteDisplay anecdote={anecdotes[selected]} point={points[selected]}/>
+      <Button handleClick={addVote} text="vote" />
+      <Button handleClick={nextAnecdotes} text="next anecdote"/>
+      <h2>Anecdote with most votes</h2>
+      <AnecdoteDisplay anecdote={anecdotes[maxVoteResult]} point={points[maxVoteResult]}/>
     </div>
   );
 }
