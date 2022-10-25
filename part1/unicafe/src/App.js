@@ -12,9 +12,13 @@ const Statistics = (props) => {
   const all = goodData + neutralData + badData
   const average = (goodData*1 + badData*-1) / all
   const positvePercent = goodData * 100 / all
+  if (goodData === 0 && neutralData === 0 && badData === 0) {
+    return (
+      <p>No feedback given</p>
+    )
+  }
   return(
     <div>
-      <h2>statistics</h2>
       <p>good {goodData}</p>
       <p>neutral {neutralData}</p>
       <p>bad {badData}</p>
@@ -38,11 +42,12 @@ const App = () => {
     setBad(bad + 1)
   }
   return (
-    <div class='App'>
+    <div className='App'>
       <h1>give feedback</h1>
       <Button handleClick={clickGood} text="good"/>
       <Button handleClick={clickNeutral} text="neutral"/>
       <Button handleClick={clickBad} text="bad"/>
+      <h2>statistics</h2>
       <Statistics goodData={good} neutralData={neutral} badData={bad}/>
     </div>
   )
