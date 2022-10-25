@@ -1,33 +1,55 @@
 import { useState } from 'react'
 import './App.css'
 
+// Define Button component
 const Button = (props) => {
   const {handleClick, text} = props
   return (
     <button onClick={handleClick}> {text} </button>
   )
 }
+
+// Define StatisticLine component
+const StatisticLine = (props) => {
+  const {text, value} = props
+  const percent = text === "positive" ? "%" : ""
+  console.log(percent)
+  return (
+    // text === "positve" ? <p>{text} {value} %</p> : <p>{text} {value}</p>
+    <tr>
+      <td>{text}</td>
+      <td>{value} {percent}</td>
+    </tr>
+  ) 
+}
+
+// Define Statistics component
 const Statistics = (props) => {
   const {goodData, neutralData,badData} = props
   const all = goodData + neutralData + badData
   const average = (goodData*1 + badData*-1) / all
-  const positvePercent = goodData * 100 / all
+  const positivePercent = goodData * 100 / all
   if (goodData === 0 && neutralData === 0 && badData === 0) {
     return (
       <p>No feedback given</p>
     )
   }
   return(
-    <div>
-      <p>good {goodData}</p>
-      <p>neutral {neutralData}</p>
-      <p>bad {badData}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positve {positvePercent} %</p>
-    </div>
+    <table>
+      <tbody>
+      <StatisticLine text = "good" value = {goodData} />
+      <StatisticLine text = "neutral" value = {neutralData} />
+      <StatisticLine text = "bad" value = {badData} />
+      <StatisticLine text = "all" value = {all} />
+      <StatisticLine text = "average" value = {average} />
+      <StatisticLine text = "positive" value = {positivePercent} />
+      </tbody>
+    </table>
   )
 }
+
+
+// Define App component
 const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
