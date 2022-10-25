@@ -7,7 +7,7 @@ const Button = (props) => {
     <button onClick={handleClick}> {text} </button>
   )
 }
-const Statistic = (props) => {
+const Statistics = (props) => {
   const {goodData, neutralData,badData} = props
   const all = goodData + neutralData + badData
   const average = (goodData*1 + badData*-1) / all
@@ -43,7 +43,7 @@ const App = () => {
       <Button handleClick={clickGood} text="good"/>
       <Button handleClick={clickNeutral} text="neutral"/>
       <Button handleClick={clickBad} text="bad"/>
-      <Statistic goodData={good} neutralData={neutral} badData={bad}/>
+      <Statistics goodData={good} neutralData={neutral} badData={bad}/>
     </div>
   )
 }
