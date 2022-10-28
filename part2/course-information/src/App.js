@@ -11,6 +11,7 @@ const Content = ({ parts }) =>
   <>
     {parts.map(part => <Part key={part.id} part={part}/>)}
   </>
+
 const Course = ({course}) => {
   const exerciseSum = course.parts.map(part => part.exercises).reduce((a,b) => a + b,0);
   return (
@@ -23,7 +24,7 @@ const Course = ({course}) => {
 
 }
 const App = () => {
-  const course = {
+  const courses = [{
     id: 1,
     name: 'Half Stack application development',
     parts: [
@@ -48,9 +49,31 @@ const App = () => {
         id: 4
       }
     ]
+  },
+  {
+    name: 'Node.js',
+    id: 2,
+    parts: [
+      {
+        name: 'Routing',
+        exercises: 3,
+        id: 1
+      },
+      {
+        name: 'Middlewares',
+        exercises: 7,
+        id: 2
+      }
+    ]
   }
+]
+  // return <Course course={courses[0]} />
+  return (
+    <div>
+      {courses.map(course => <Course key= {course.id} course={course} />)}
+    </div>
 
-  return <Course course={course} />
+  )
 }
 
 
