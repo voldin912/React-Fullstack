@@ -13,12 +13,23 @@ const App = () => {
   ])
   const [newName, setNewName] = useState("")
   
+  // Function handling name change in input
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
+
+  // Function checking name existing in persons array
+  const nameExisting = (name) => persons.some(person => person.name == name)
+
+  // Function handling form submission
   const handleFormSubmit = (event) => {
     event.preventDefault()
-    setPersons([...persons,{name:newName}])
+    if (nameExisting(newName)) {
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      setPersons([...persons,{name:newName}])
+      setNewName("")  
+    }
   }
 
   return (
@@ -26,7 +37,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={handleFormSubmit}>
         <div>
-          name: <input onChange={handleNameChange}/>
+          name: <input onChange={handleNameChange} value = {newName}/>
         </div>
         <div>
           <button type="submit">add</button>
