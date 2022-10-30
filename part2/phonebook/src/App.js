@@ -1,5 +1,15 @@
 import { useState } from "react"
 
+// Filter component
+const Filter = ({filterChangeMethod}) => {
+  return (
+    <div>
+    filter shown with <input onChange={filterChangeMethod}/>
+    </div>
+  )
+}
+
+// Person component
 const Person = (props) => {
   const {name,phone} = props
   return (
@@ -7,6 +17,36 @@ const Person = (props) => {
   )
 }
 
+// PersonForm component
+const PersonForm = (props) => {
+  const {formSubmitMethod, nameChangeMethod, phoneChangeMethod, newName, phoneNumber} = props
+  return (
+    <form onSubmit={formSubmitMethod}>
+        <div>
+          name: <input onChange={nameChangeMethod} value = {newName}/>
+        </div>
+        <div>
+          number: <input onChange={phoneChangeMethod} value={phoneNumber}/>
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+  )
+}
+
+const Persons = ({filterName, persons}) => {
+  const filterNumberList = (filterName) => {
+    if(filterName.length !== 0) {
+      return persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
+    }
+    return persons
+  }
+  return (
+    filterNumberList(filterName).map(person => <Person key={person.name} name={person.name} phone={person.phone}/>)
+  )
+}
+// App component
 const App = () => {
   const [persons, setPersons] = useState ([
     {name: "Arto Hellas",phone:"040-1234567"}, 
@@ -43,32 +83,20 @@ const App = () => {
       setPhoneNumber("") 
     }
   }
-  const filterNumberList = (filterName) => {
-    if(filterName.length !== 0) {
-      return persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
-    }
-    return persons
-  }
+
   return (
     <div style = {{margin:"25px"}}>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input onChange={handleNameFilter}/>
-      </div>
+      <Filter filterChangeMethod={handleNameFilter} />
       <h2>add a new</h2>
-      <form onSubmit={handleFormSubmit}>
-        <div>
-          name: <input onChange={handleNameChange} value = {newName}/>
-        </div>
-        <div>
-          number: <input onChange={handlePhoneChange} value={phoneNumber}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm 
+          formSubmitMethod = {handleFormSubmit}
+          nameChangeMethod = {handleNameChange}
+          phoneChangeMethod = {handlePhoneChange}
+          newName =  {newName}
+          phoneNumber =  {phoneNumber}/>
       <h2>Numbers</h2>
-      {filterNumberList(filterName).map(person => <Person key={person.name} name={person.name} phone={person.phone}/>)}
+      <Persons filterName={filterName} persons={persons}/>
     </div>
   );
 }
