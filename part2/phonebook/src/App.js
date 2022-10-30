@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 // Filter component
 const Filter = ({filterChangeMethod}) => {
@@ -43,20 +44,26 @@ const Persons = ({filterName, persons}) => {
     return persons
   }
   return (
-    filterNumberList(filterName).map(person => <Person key={person.name} name={person.name} phone={person.phone}/>)
+    filterNumberList(filterName).map(person => <Person key={person.id} name={person.name} phone={person.number}/>)
   )
 }
 // App component
 const App = () => {
-  const [persons, setPersons] = useState ([
-    {name: "Arto Hellas",phone:"040-1234567"}, 
-    {name: "Ada Lovalace",phone:"045-6844579"},
-    {name: "Dan Abramov", phone:"042-457896"},
-    {name: "Mary Poppendieck", phone:"048-2667239"}
-  ])
+  const [persons, setPersons] = useState ([])
   const [newName, setNewName] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [filterName, setFilterName] = useState("")
+
+  useEffect(() => {
+    console.log("effect")
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response => {
+        console.log("promise fulfilled")
+        setPersons(response.data)
+      })
+  },[])
+  console.log("render", persons.length, "persons")
   // Function handling name change in input
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -78,7 +85,7 @@ const App = () => {
     if (nameExisting(newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons([...persons,{name:newName,phone:phoneNumber}])
+      setPersons([...persons,{id: persons.length + 1,name:newName,number:phoneNumber}])
       setNewName("") 
       setPhoneNumber("") 
     }
