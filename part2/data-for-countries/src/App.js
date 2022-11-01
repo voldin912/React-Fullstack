@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
+import Weather from "./Weather"
 
-//  Country component that displays specific information of a country
+//  Country component that displays specific information of a country and weather in the country
 const Country = ({country})  => {
   const languagesList = Object.values(country.languages)
+  const countryName = country.name.common
   return (
     <div>
-      <h1>{country.name.common}</h1>
+      <h1>{countryName}</h1>
       <p>capital {country.capital}</p>
       <p>area {country.area}</p>
       <p><b>languages:</b></p>
@@ -14,6 +16,7 @@ const Country = ({country})  => {
       {languagesList.map(language => <li key={language}>{language}</li>)}
       </ul>
       <img src={country.flags.png} width="180" height="180"/>
+      <Weather country={country}/>
     </div>
     )
 }
@@ -27,6 +30,7 @@ const CountryListDisplay = ({country,clickListener}) => {
   )
 
 }
+
 // component that renders CountryListDisplay 
 const FoundCountries = ({countries,handleShowButtonClick}) => {
   return (
