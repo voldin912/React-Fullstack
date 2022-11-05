@@ -53,17 +53,16 @@ const App = () => {
   const [newName, setNewName] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [filterName, setFilterName] = useState("")
+  const server_url = "http://localhost:3001/persons"
 
   useEffect(() => {
-    console.log("effect")
     axios
-      .get("http://localhost:3001/persons")
+      .get(server_url)
       .then(response => {
-        console.log("promise fulfilled")
         setPersons(response.data)
       })
   },[])
-  console.log("render", persons.length, "persons")
+
   // Function handling name change in input
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -85,9 +84,14 @@ const App = () => {
     if (nameExisting(newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons([...persons,{id: persons.length + 1,name:newName,number:phoneNumber}])
-      setNewName("") 
-      setPhoneNumber("") 
+      const newPersons = {name:newName, number:phoneNumber,id:persons.length + 1}
+      axios
+        .post(server_url,newPersons)
+        .then(response => {
+          setPersons([...persons,response.data])
+          setNewName("") 
+          setPhoneNumber("") 
+        })
     }
   }
 
