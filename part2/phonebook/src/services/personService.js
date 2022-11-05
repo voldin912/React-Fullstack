@@ -13,8 +13,14 @@ const addPerson = (newPerson) => {
 const deletePerson = (deleteId) => {
     return axios.delete(`${server_url}/${deleteId}`)
 }
+const updatePerson = (updateId,newPerson) => {
+    const request = axios.put(`${server_url}/${updateId}`,newPerson)
+    return request.then(response => response.data)
+
+}
 export default {
     getPersons,
     addPerson,
-    deletePerson
+    deletePerson,
+    updatePerson
 }

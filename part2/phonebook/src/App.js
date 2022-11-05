@@ -14,7 +14,7 @@ const Filter = ({filterChangeMethod}) => {
 const Person = (props) => {
   const {person,deletePerson} = props
   return (
-    <div>{person.name} {person.phone} <button onClick={()=> {
+    <div>{person.name} {person.number} <button onClick={()=> {
       if(window.confirm(`Delete ${person.name} ?`)) {
         deletePerson(person.id)
       }
@@ -78,8 +78,6 @@ const App = () => {
   const handlePhoneChange = (event) => {
     setPhoneNumber(event.target.value)
   }
-  // Function checking name existing in persons array
-  const nameExisting = (name) => persons.some(person => person.name === name)
 
   // Function handling filterName change in input
   const handleNameFilter = (event) => {
@@ -88,17 +86,33 @@ const App = () => {
   // Function handling form submission
   const handleFormSubmit = (event) => {
     event.preventDefault()
-    if (nameExisting(newName)) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
+    if (newName.length !== 0 && phoneNumber !== 0) {
       const newPerson = {name:newName, number:phoneNumber}
-      personService.addPerson(newPerson)
-        .then(person => {
-          setPersons([...persons,person])
-          setNewName("") 
-          setPhoneNumber("") 
-        })
+      const findPerson = persons.find(person => person.name === newName)
+      // implementation of person if found in the list or not
+      if (findPerson) {
+        if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+          personService.updatePerson(findPerson.id,newPerson)
+          .then(updatedPerson => {
+            // create a new person list, replace the findPerson with returned response of put http method
+            const newPersonList = persons.concat()
+            newPersonList.splice(persons.indexOf(findPerson),1,updatedPerson)
+            setPersons(newPersonList)
+            setNewName("") 
+            setPhoneNumber("") 
+          } )
+        }
+      } else {
+        personService.addPerson(newPerson)
+          .then(person => {
+            setPersons([...persons,person])
+            setNewName("") 
+            setPhoneNumber("") 
+          })
+      }
+
     }
+
   }
   // Function handling delete feature 
   const handleDeletePerson = (id) => {
