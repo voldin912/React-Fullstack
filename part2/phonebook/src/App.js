@@ -12,9 +12,14 @@ const Filter = ({filterChangeMethod}) => {
 
 // Person component
 const Person = (props) => {
-  const {name,phone} = props
+  const {person,deletePerson} = props
   return (
-    <p>{name} {phone}</p>
+    <div>{person.name} {person.phone} <button onClick={()=> {
+      if(window.confirm(`Delete ${person.name} ?`)) {
+        deletePerson(person.id)
+      }
+    }}>delete</button>
+    </div>
   )
 }
 
@@ -36,7 +41,7 @@ const PersonForm = (props) => {
   )
 }
 
-const Persons = ({filterName, persons}) => {
+const Persons = ({filterName, persons, deletePerson}) => {
   const filterNumberList = (filterName) => {
     if(filterName.length !== 0) {
       return persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
@@ -44,7 +49,11 @@ const Persons = ({filterName, persons}) => {
     return persons
   }
   return (
-    filterNumberList(filterName).map(person => <Person key={person.id} name={person.name} phone={person.number}/>)
+    filterNumberList(filterName).map(person => 
+    <Person 
+      key={person.id} 
+      person={person} 
+      deletePerson={deletePerson}/>)
   )
 }
 // App component
@@ -54,11 +63,9 @@ const App = () => {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [filterName, setFilterName] = useState("")
 
-
   useEffect(() => {
       personService.getPersons()
       .then(personList => {
-        console.log(personList);
         setPersons(personList)
       })
   },[])
@@ -84,7 +91,7 @@ const App = () => {
     if (nameExisting(newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      const newPerson = {name:newName, number:phoneNumber,id:persons.length + 1}
+      const newPerson = {name:newName, number:phoneNumber}
       personService.addPerson(newPerson)
         .then(person => {
           setPersons([...persons,person])
@@ -93,7 +100,17 @@ const App = () => {
         })
     }
   }
+  // Function handling delete feature 
+  const handleDeletePerson = (id) => {
+    const newPersonListAfterDelete = persons.filter(person => person.id !== id)   
+    personService.deletePerson(id)
+    .then(result => {
+      if(result.status = "200") {
+        setPersons(newPersonListAfterDelete)
+      }
+    })
 
+  }
   return (
     <div style = {{margin:"25px"}}>
       <h2>Phonebook</h2>
@@ -106,7 +123,7 @@ const App = () => {
           newName =  {newName}
           phoneNumber =  {phoneNumber}/>
       <h2>Numbers</h2>
-      <Persons filterName={filterName} persons={persons}/>
+      <Persons filterName={filterName} persons={persons} deletePerson = {handleDeletePerson}/>
     </div>
   );
 }

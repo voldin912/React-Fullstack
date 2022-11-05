@@ -10,7 +10,11 @@ const addPerson = (newPerson) => {
     return request.then(response => response.data)
 }
 
+const deletePerson = (deleteId) => {
+    return axios.delete(`${server_url}/${deleteId}`)
+}
 export default {
     getPersons,
-    addPerson
+    addPerson,
+    deletePerson
 }
