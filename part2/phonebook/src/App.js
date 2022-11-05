@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-
+import personService  from "./services/personService"
 // Filter component
 const Filter = ({filterChangeMethod}) => {
   return (
@@ -53,13 +53,13 @@ const App = () => {
   const [newName, setNewName] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [filterName, setFilterName] = useState("")
-  const server_url = "http://localhost:3001/persons"
+
 
   useEffect(() => {
-    axios
-      .get(server_url)
-      .then(response => {
-        setPersons(response.data)
+      personService.getPersons()
+      .then(personList => {
+        console.log(personList);
+        setPersons(personList)
       })
   },[])
 
@@ -84,11 +84,10 @@ const App = () => {
     if (nameExisting(newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      const newPersons = {name:newName, number:phoneNumber,id:persons.length + 1}
-      axios
-        .post(server_url,newPersons)
-        .then(response => {
-          setPersons([...persons,response.data])
+      const newPerson = {name:newName, number:phoneNumber,id:persons.length + 1}
+      personService.addPerson(newPerson)
+        .then(person => {
+          setPersons([...persons,person])
           setNewName("") 
           setPhoneNumber("") 
         })
