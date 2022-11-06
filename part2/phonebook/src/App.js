@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import personService  from "./services/personService"
+import {PersonForm,Persons} from "./personUI"
 // Filter component
 const Filter = ({filterChangeMethod}) => {
   return (
@@ -10,50 +11,14 @@ const Filter = ({filterChangeMethod}) => {
   )
 }
 
-// Person component
-const Person = (props) => {
-  const {person,deletePerson} = props
-  return (
-    <div>{person.name} {person.number} <button onClick={()=> {
-      if(window.confirm(`Delete ${person.name} ?`)) {
-        deletePerson(person.id)
-      }
-    }}>delete</button>
-    </div>
-  )
-}
-
-// PersonForm component
-const PersonForm = (props) => {
-  const {formSubmitMethod, nameChangeMethod, phoneChangeMethod, newName, phoneNumber} = props
-  return (
-    <form onSubmit={formSubmitMethod}>
-        <div>
-          name: <input onChange={nameChangeMethod} value = {newName}/>
-        </div>
-        <div>
-          number: <input onChange={phoneChangeMethod} value={phoneNumber}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-  )
-}
-
-const Persons = ({filterName, persons, deletePerson}) => {
-  const filterNumberList = (filterName) => {
-    if(filterName.length !== 0) {
-      return persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
-    }
-    return persons
+const Notification = ({successMessage}) => {
+  if (successMessage.length === 0) {
+    return null
   }
   return (
-    filterNumberList(filterName).map(person => 
-    <Person 
-      key={person.id} 
-      person={person} 
-      deletePerson={deletePerson}/>)
+    <div className="success">
+      {successMessage}
+    </div>
   )
 }
 // App component
@@ -62,6 +27,7 @@ const App = () => {
   const [newName, setNewName] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [filterName, setFilterName] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
 
   useEffect(() => {
       personService.getPersons()
@@ -108,6 +74,8 @@ const App = () => {
             setPersons([...persons,person])
             setNewName("") 
             setPhoneNumber("") 
+            setSuccessMessage(`Added ${person.name}`)
+            setTimeout(() => {setSuccessMessage("")},5000)
           })
       }
 
@@ -128,6 +96,7 @@ const App = () => {
   return (
     <div style = {{margin:"25px"}}>
       <h2>Phonebook</h2>
+      <Notification successMessage={successMessage}/>
       <Filter filterChangeMethod={handleNameFilter} />
       <h2>add a new</h2>
       <PersonForm 
