@@ -11,13 +11,16 @@ const Filter = ({filterChangeMethod}) => {
   )
 }
 
-const Notification = ({successMessage}) => {
-  if (successMessage.length === 0) {
+const Notification = ({successMessage,errorMessage}) => {
+  if (successMessage.length === 0 && errorMessage.length === 0) {
     return null
-  }
+  } 
+  const statusClass = successMessage ?  "success"
+                      : errorMessage  ? "error"
+                      : ""
   return (
-    <div className="success">
-      {successMessage}
+    <div className={`notification ${statusClass}`}>
+      {statusClass === "success" ? successMessage : errorMessage}
     </div>
   )
 }
@@ -28,6 +31,7 @@ const App = () => {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [filterName, setFilterName] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
+  const [errorMessage, setErrorMessage]  = useState("")
 
   useEffect(() => {
       personService.getPersons()
@@ -80,23 +84,31 @@ const App = () => {
       }
 
     }
-
   }
   // Function handling delete feature 
   const handleDeletePerson = (id) => {
     const newPersonListAfterDelete = persons.filter(person => person.id !== id)   
+    const personToDelete = persons.find(person => person.id === id)
+    
     personService.deletePerson(id)
     .then(result => {
       if(result.status = "200") {
         setPersons(newPersonListAfterDelete)
+        setSuccessMessage(`Delete ${personToDelete.name} successfully`)
+        setTimeout(() => setSuccessMessage(""),3000)
       }
+    })
+    .catch(error => {
+      setErrorMessage(`Information of ${personToDelete.name} has already been removed from server`)
+      setTimeout(() => setErrorMessage(""),3000)
+      setPersons(persons.filter(person => person.id != id))
     })
 
   }
   return (
     <div style = {{margin:"25px"}}>
       <h2>Phonebook</h2>
-      <Notification successMessage={successMessage}/>
+      <Notification successMessage={successMessage} errorMessage={errorMessage}/>
       <Filter filterChangeMethod={handleNameFilter} />
       <h2>add a new</h2>
       <PersonForm 

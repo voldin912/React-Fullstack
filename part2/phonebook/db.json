@@ -7,7 +7,7 @@
     },
     {
       "name": "eugine",
-      "number": "1234",
+      "number": "12456",
       "id": 6
     },
     {
@@ -29,21 +29,6 @@
       "name": "Tina",
       "number": "345467",
       "id": 10
-    },
-    {
-      "name": "Hoang Phuong",
-      "number": "345",
-      "id": 11
-    },
-    {
-      "name": "Toni",
-      "number": "124",
-      "id": 12
-    },
-    {
-      "name": "Helen",
-      "number": "4343",
-      "id": 13
     }
   ]
 }
