@@ -30,6 +30,13 @@ app.get("/info", (req,res) => {
     const numberPerson = persons.length
     res.send(`Phonebook has info for ${numberPerson} people \n${current_time}`)
 })
+app.get("/api/persons/:personId", (req,res) => {
+    const person = persons.find(person => person.id === Number(req.params.personId))
+    if (!person) {
+        return res.status(404).json({error:"content missing"})
+    } 
+    res.json(person)
+})
 
 const PORT = 3001
 app.listen(PORT,  () => {
