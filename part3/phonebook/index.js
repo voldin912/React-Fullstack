@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-const persons = [
+let persons = [
     { 
         "id": 1,
         "name": "Arto Hellas", 
@@ -36,6 +36,11 @@ app.get("/api/persons/:personId", (req,res) => {
         return res.status(404).json({error:"content missing"})
     } 
     res.json(person)
+})
+app.delete("/api/persons/:personId",(req,res) => {
+    const deleteId = req.params.personId
+    persons = persons.filter(person => person.id !== Number(deleteId))
+    res.status(204).end()
 })
 
 const PORT = 3001
