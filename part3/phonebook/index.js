@@ -47,6 +47,12 @@ app.post("/api/persons",(req,res) => {
     const data = req.body
     const startId = Math.max(...persons.map(person => person.id))
     const randomId = Math.floor(Math.random() * 50) + startId
+    const nameExist = persons.some(person => person.name === data.name)
+    if(!data.name || !data.number) {
+        return res.status(400).json({error:"data is missing"})
+    } else if(nameExist) {
+        return res.status(400).json({error:"name must be unique"})
+    }
     persons = [...persons,{id:randomId,name:data.name,number:data.number}]
     res.json(persons)
 })
