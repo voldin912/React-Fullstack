@@ -22,6 +22,7 @@ let persons = [
         "number": "39-23-6423122"
       }
 ]
+app.use(express.json())
 app.get("/api/persons",(req,res) => {
     res.json(persons)
 })
@@ -42,6 +43,14 @@ app.delete("/api/persons/:personId",(req,res) => {
     persons = persons.filter(person => person.id !== Number(deleteId))
     res.status(204).end()
 })
+app.post("/api/persons",(req,res) => {
+    const data = req.body
+    const startId = Math.max(...persons.map(person => person.id))
+    const randomId = Math.floor(Math.random() * 50) + startId
+    persons = [...persons,{id:randomId,name:data.name,number:data.number}]
+    res.json(persons)
+})
+
 
 const PORT = 3001
 app.listen(PORT,  () => {
