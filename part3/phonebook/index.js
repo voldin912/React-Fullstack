@@ -23,8 +23,10 @@ let persons = [
         "number": "39-23-6423122"
       }
 ]
+
 app.use(express.json())
-app.use(morgan("tiny"))
+morgan.token('tiny', function (req, res) { return JSON.stringify(req.body) })
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :tiny"))
 
 app.get("/api/persons",(req,res) => {
     res.json(persons)
