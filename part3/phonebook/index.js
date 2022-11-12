@@ -1,5 +1,6 @@
 const express = require("express")
 const app = express()
+const morgan = require("morgan")
 let persons = [
     { 
         "id": 1,
@@ -23,9 +24,12 @@ let persons = [
       }
 ]
 app.use(express.json())
+app.use(morgan("tiny"))
+
 app.get("/api/persons",(req,res) => {
     res.json(persons)
 })
+
 app.get("/info", (req,res) => {
     const current_time = new Date().toString()
     const numberPerson = persons.length
