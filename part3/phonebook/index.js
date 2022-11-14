@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const morgan = require("morgan")
+const cors = require("cors")
 let persons = [
     { 
         "id": 1,
@@ -27,6 +28,7 @@ let persons = [
 app.use(express.json())
 morgan.token('tiny', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :tiny"))
+app.use(cors())
 
 app.get("/api/persons",(req,res) => {
     res.json(persons)
@@ -59,12 +61,13 @@ app.post("/api/persons",(req,res) => {
     } else if(nameExist) {
         return res.status(400).json({error:"name must be unique"})
     }
-    persons = [...persons,{id:randomId,name:data.name,number:data.number}]
-    res.json(persons)
+    const newPerson = {id:randomId,name:data.name,number:data.number}
+    persons = [...persons,newPerson]
+    res.json(newPerson)
 })
 
 
-const PORT = 3001
+const PORT = 3003
 app.listen(PORT,  () => {
     console.log(`Server running on port ${PORT}`);
 })

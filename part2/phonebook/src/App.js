@@ -75,6 +75,7 @@ const App = () => {
       } else {
         personService.addPerson(newPerson)
           .then(person => {
+            console.log(person);
             setPersons([...persons,person])
             setNewName("") 
             setPhoneNumber("") 

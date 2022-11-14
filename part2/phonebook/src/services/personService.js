@@ -1,5 +1,5 @@
 import axios from "axios"
-const server_url = "http://localhost:3001/persons"
+const server_url = "/api/persons"
 const getPersons = () => {
    const request = axios.get(server_url)
    return request.then(response => response.data)
@@ -16,7 +16,6 @@ const deletePerson = (deleteId) => {
 const updatePerson = (updateId,newPerson) => {
     const request = axios.put(`${server_url}/${updateId}`,newPerson)
     return request.then(response => response.data)
-
 }
 export default {
     getPersons,
