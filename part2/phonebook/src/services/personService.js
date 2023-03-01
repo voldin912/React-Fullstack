@@ -17,7 +17,7 @@ const updatePerson = (updateId,newPerson) => {
     const request = axios.put(`${server_url}/${updateId}`,newPerson)
     return request.then(response => response.data)
 }
-export default {
+export {
     getPersons,
     addPerson,
     deletePerson,

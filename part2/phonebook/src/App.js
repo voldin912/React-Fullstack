@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import axios from "axios"
 import personService  from "./services/personService"
 import {PersonForm,Persons} from "./personUI"
 // Filter component
@@ -93,7 +92,7 @@ const App = () => {
     
     personService.deletePerson(id)
     .then(result => {
-      if(result.status = "200") {
+      if(result.status === "200") {
         setPersons(newPersonListAfterDelete)
         setSuccessMessage(`Delete ${personToDelete.name} successfully`)
         setTimeout(() => setSuccessMessage(""),3000)
@@ -102,7 +101,7 @@ const App = () => {
     .catch(error => {
       setErrorMessage(`Information of ${personToDelete.name} has already been removed from server`)
       setTimeout(() => setErrorMessage(""),3000)
-      setPersons(persons.filter(person => person.id != id))
+      setPersons(persons.filter(person => person.id !== id))
     })
 
   }
