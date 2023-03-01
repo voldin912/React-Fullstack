@@ -1,6 +1,4 @@
 # Phonebook Application
-This application is deployed to Heroku hosting platform.
+This application is deployed to Render Hosting Platform.
 
-Link: [Phonebook Application Link][Phonebook application ]
-
-[Phonebook application ]: https://phonebook-giaongo.herokuapp.com/
+[Phonebook Application](https://render-test-9mt4.onrender.com)
