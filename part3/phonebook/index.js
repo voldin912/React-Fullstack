@@ -49,10 +49,16 @@ app.get("/api/persons", async (req, res) => {
   }
 });
 
-app.get("/info", (req, res) => {
-  const current_time = new Date().toString();
-  const numberPerson = persons.length;
-  res.send(`Phonebook has info for ${numberPerson} people \n${current_time}`);
+app.get("/info", async (req, res, next) => {
+  try {
+    const current_time = new Date().toString();
+    const phonebookList = await Phonebook.find({});
+    res.status(201).send(
+        `Phonebook has info for ${phonebookList.length} people \n${current_time}`
+      );
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get("/api/persons/:personId", async (req, res, next) => {
@@ -99,14 +105,16 @@ app.post("/api/persons", async (req, res, next) => {
 });
 
 app.put("/api/persons/:personId", async (req, res, next) => {
-  console.log('updated data', req.body);
+  console.log("updated data", req.body);
   const data = req.body;
   const id = req.params.personId;
   if (!Object.keys(data).length) {
     return res.status(404).json({ error: "content missing" });
   }
   try {
-    const updatedPhoneBook = await Phonebook.findByIdAndUpdate(id, data, {new:true});
+    const updatedPhoneBook = await Phonebook.findByIdAndUpdate(id, data, {
+      new: true,
+    });
     console.log("updatedPhoneBook", updatedPhoneBook);
     res.status(201).json(updatedPhoneBook);
   } catch (error) {
@@ -119,7 +127,6 @@ const errorHandler = (error, req, res, next) => {
   if (error.name === "CastError") {
     return res.status(400).json({ error: "malformatted id" });
   }
-
   next(error);
 };
 const unknownEndpoint = (req, res) => {
