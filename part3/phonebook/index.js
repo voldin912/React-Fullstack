@@ -30,8 +30,6 @@ let persons = [
 ];
 app.use(express.json());
 
-
-
 morgan.token("tiny", function (req, res) {
   return JSON.stringify(req.body);
 });
@@ -85,7 +83,6 @@ app.delete("/api/persons/:personId", async (req, res, next) => {
 
 app.post("/api/persons", async (req, res, next) => {
   const data = req.body;
-  console.log("sent data is ", data);
   if (!Object.keys(data).length) {
     return res.status(404).json({ error: "content missing" });
   }
@@ -101,6 +98,21 @@ app.post("/api/persons", async (req, res, next) => {
   }
 });
 
+app.put("/api/persons/:personId", async (req, res, next) => {
+  console.log('updated data', req.body);
+  const data = req.body;
+  const id = req.params.personId;
+  if (!Object.keys(data).length) {
+    return res.status(404).json({ error: "content missing" });
+  }
+  try {
+    const updatedPhoneBook = await Phonebook.findByIdAndUpdate(id, data, {new:true});
+    console.log("updatedPhoneBook", updatedPhoneBook);
+    res.status(201).json(updatedPhoneBook);
+  } catch (error) {
+    next(error);
+  }
+});
 
 const errorHandler = (error, req, res, next) => {
   console.error(error.message);
