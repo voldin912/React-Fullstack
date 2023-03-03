@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
 const Phonebook = require("./models/phonebook");
+const { findByIdAndRemove } = require("./models/phonebook");
 
 let persons = [
   {
@@ -27,8 +28,10 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
-
 app.use(express.json());
+
+
+
 morgan.token("tiny", function (req, res) {
   return JSON.stringify(req.body);
 });
@@ -54,26 +57,37 @@ app.get("/info", (req, res) => {
   res.send(`Phonebook has info for ${numberPerson} people \n${current_time}`);
 });
 
-app.get("/api/persons/:personId", (req, res) => {
-  const person = persons.find(
-    (person) => person.id === Number(req.params.personId)
-  );
-  if (!person) {
-    return res.status(404).json({ error: "content missing" });
+app.get("/api/persons/:personId", async (req, res, next) => {
+  try {
+    const result = await Phonebook.findById(req.params.personId);
+    if (result) {
+      res.json(result);
+    } else {
+      res.status(404).end();
+    }
+  } catch (error) {
+    next(error);
   }
-  res.json(person);
 });
 
-app.delete("/api/persons/:personId", (req, res) => {
-  const deleteId = req.params.personId;
-  persons = persons.filter((person) => person.id !== Number(deleteId));
-  res.status(204).end();
+app.delete("/api/persons/:personId", async (req, res, next) => {
+  try {
+    const result = await Phonebook.findByIdAndRemove(req.params.personId);
+    if (result) {
+      res.status(201).json({ message: "deleted successfully" });
+    } else {
+      res.status(404).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
-app.post("/api/persons", async (req, res) => {
+app.post("/api/persons", async (req, res, next) => {
   const data = req.body;
-  if (!data) {
-    return res.status(400).json({ error: "content missing" });
+  console.log("sent data is ", data);
+  if (!Object.keys(data).length) {
+    return res.status(404).json({ error: "content missing" });
   }
   const phonebook = new Phonebook({
     name: data.name,
@@ -81,13 +95,26 @@ app.post("/api/persons", async (req, res) => {
   });
   try {
     const savedPhoneBook = await phonebook.save();
-    console.log("savedPhoneBook", savedPhoneBook);
-    res.json(savedPhoneBook);
+    res.status(201).json(savedPhoneBook);
   } catch (error) {
-    console.error("savingPhoneBookError", error);
-    res.status(204).json({ error: "error saving phonebook" });
+    next(error);
   }
 });
+
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+  if (error.name === "CastError") {
+    return res.status(400).json({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
