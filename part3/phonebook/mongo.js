@@ -29,7 +29,7 @@ if(process.argv.length < 3) {
     process.exit(1)
 } else if(process.argv.length >= 3 && process.argv.length <=5) {
     const password = process.argv[2]
-    const url = `mongodb+srv://fullstackGiao:${password}@cluster0.ziicfbb.mongodb.net/phonebookApp?retryWrites=true&w=majority`
+    const url = `mongodb+srv://fullstackGiao:${password}@cluster0.ziicfbb.mongodb.net/?retryWrites=true&w=majority`
     const phonebookSchema = new mongoose.Schema({
         name:String,
         number:String
