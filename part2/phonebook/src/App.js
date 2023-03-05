@@ -32,7 +32,7 @@ const App = () => {
       {visible && <Notification status={status} message={message} />}
 
       <h2>Phonebook</h2>
-      <Filter persons={persons} setPersons={setPersons} />
+      <Filter getAllPersons={getAllPersons} setPersons={setPersons} />
       <h2>add a new</h2>
       <PersonForm
         persons={persons}
@@ -43,13 +43,13 @@ const App = () => {
         setMessage={setMessage}
       />
       <h2>Numbers</h2>
-      <Persons 
-      persons={persons} 
-      update={update} 
-      setUpdate={setUpdate} 
-      setVisible={setVisible}
-      setStatus={setStatus}
-      setMessage={setMessage} 
+      <Persons
+        persons={persons}
+        update={update}
+        setUpdate={setUpdate}
+        setVisible={setVisible}
+        setStatus={setStatus}
+        setMessage={setMessage}
       />
     </div>
   );
