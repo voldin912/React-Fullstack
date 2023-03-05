@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import personService from "../services/personService";
 
-const Filter = ({ setPersons }) => {
+const Filter = ({ update, setPersons }) => {
   const [filterName, setFilterName] = useState("");
   const [originalPersonLists, setOriginalPersonLists] = useState([]);
 
@@ -16,7 +16,7 @@ const Filter = ({ setPersons }) => {
 
   useEffect(() => {
     getAllPersons();
-  },[])
+  }, [update]);
 
   const handleNameFilter = (event) => {
     const requestName = event.target.value;
@@ -25,9 +25,7 @@ const Filter = ({ setPersons }) => {
       const filteredList = originalPersonLists.filter(
         (person) => person.name.toLowerCase() === requestName.toLowerCase()
       );
-      filteredList?.length
-        ? setPersons(filteredList)
-        : setPersons(null);
+      filteredList?.length ? setPersons(filteredList) : setPersons(null);
     } else {
       setPersons(originalPersonLists);
     }

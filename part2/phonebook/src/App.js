@@ -32,7 +32,7 @@ const App = () => {
       {visible && <Notification status={status} message={message} />}
 
       <h2>Phonebook</h2>
-      <Filter getAllPersons={getAllPersons} setPersons={setPersons} />
+      <Filter update={update} setPersons={setPersons} />
       <h2>add a new</h2>
       <PersonForm
         persons={persons}
