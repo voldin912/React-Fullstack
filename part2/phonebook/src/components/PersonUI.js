@@ -12,7 +12,7 @@ const Person = ({
 }) => {
   const handleDeletePerson = async (id) => {
     let status,
-    message = "";
+      message = "";
     try {
       const result = await personService.deletePerson(id);
       console.log("deleteResult", result);
@@ -72,18 +72,17 @@ const PersonForm = ({
       message = "";
     try {
       const result = await personService.addPerson(newPerson);
-      console.log("added", result);
       setUpdate(!update);
       status = "success";
       message = "Adding data successfully!";
     } catch (error) {
       status = "error";
-      message = "Error with adding data";
-      throw new Error("errorAddingNewPerson", error);
+      message = `${error}`;
+      console.log(error);
     } finally {
       setStatus(status);
       setMessage(message);
-      setVisible(true);
+      setVisible(true); 
       setTimeout(() => {
         setVisible(false);
       }, 3000);

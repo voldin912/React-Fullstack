@@ -53,7 +53,9 @@ app.get("/info", async (req, res, next) => {
   try {
     const current_time = new Date().toString();
     const phonebookList = await Phonebook.find({});
-    res.status(201).send(
+    res
+      .status(201)
+      .send(
         `Phonebook has info for ${phonebookList.length} people \n${current_time}`
       );
   } catch (error) {
@@ -114,6 +116,8 @@ app.put("/api/persons/:personId", async (req, res, next) => {
   try {
     const updatedPhoneBook = await Phonebook.findByIdAndUpdate(id, data, {
       new: true,
+      runValidators: true,
+      context: "query",
     });
     console.log("updatedPhoneBook", updatedPhoneBook);
     res.status(201).json(updatedPhoneBook);
@@ -126,6 +130,8 @@ const errorHandler = (error, req, res, next) => {
   console.error(error.message);
   if (error.name === "CastError") {
     return res.status(400).json({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return res.status(400).json({ error: error.message });
   }
   next(error);
 };
