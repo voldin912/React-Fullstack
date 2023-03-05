@@ -1,55 +1,32 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const morgan = require("morgan");
-const cors = require("cors");
-require("dotenv").config();
-const Phonebook = require("./models/phonebook");
-const { findByIdAndRemove } = require("./models/phonebook");
+const morgan = require('morgan');
+const cors = require('cors');
+require('dotenv').config();
+const Phonebook = require('./models/phonebook');
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
 app.use(express.json());
 
-morgan.token("tiny", function (req, res) {
+morgan.token('tiny', function (req) {
   return JSON.stringify(req.body);
 });
 app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :tiny")
+  morgan(':method :url :status :res[content-length] - :response-time ms :tiny')
 );
 app.use(cors());
-app.use(express.static("build"));
+app.use(express.static('build'));
 
-app.get("/api/persons", async (req, res) => {
+app.get('/api/persons', async (req, res) => {
   try {
     const phonebookList = await Phonebook.find({});
     return res.json(phonebookList);
   } catch (error) {
-    console.error("getPhonebookListError", error);
-    return res.status(404).json({ error: "error getting all phonebooks" });
+    console.error('getPhonebookListError', error);
+    return res.status(404).json({ error: 'error getting all phonebooks' });
   }
 });
 
-app.get("/info", async (req, res, next) => {
+app.get('/info', async (req, res, next) => {
   try {
     const current_time = new Date().toString();
     const phonebookList = await Phonebook.find({});
@@ -63,7 +40,7 @@ app.get("/info", async (req, res, next) => {
   }
 });
 
-app.get("/api/persons/:personId", async (req, res, next) => {
+app.get('/api/persons/:personId', async (req, res, next) => {
   try {
     const result = await Phonebook.findById(req.params.personId);
     if (result) {
@@ -76,11 +53,11 @@ app.get("/api/persons/:personId", async (req, res, next) => {
   }
 });
 
-app.delete("/api/persons/:personId", async (req, res, next) => {
+app.delete('/api/persons/:personId', async (req, res, next) => {
   try {
     const result = await Phonebook.findByIdAndRemove(req.params.personId);
     if (result) {
-      res.status(201).json({ message: "deleted successfully" });
+      res.status(201).json({ message: 'deleted successfully' });
     } else {
       res.status(404).end();
     }
@@ -89,10 +66,10 @@ app.delete("/api/persons/:personId", async (req, res, next) => {
   }
 });
 
-app.post("/api/persons", async (req, res, next) => {
+app.post('/api/persons', async (req, res, next) => {
   const data = req.body;
   if (!Object.keys(data).length) {
-    return res.status(404).json({ error: "content missing" });
+    return res.status(404).json({ error: 'content missing' });
   }
   const phonebook = new Phonebook({
     name: data.name,
@@ -106,20 +83,20 @@ app.post("/api/persons", async (req, res, next) => {
   }
 });
 
-app.put("/api/persons/:personId", async (req, res, next) => {
-  console.log("updated data", req.body);
+app.put('/api/persons/:personId', async (req, res, next) => {
+  console.log('updated data', req.body);
   const data = req.body;
   const id = req.params.personId;
   if (!Object.keys(data).length) {
-    return res.status(404).json({ error: "content missing" });
+    return res.status(404).json({ error: 'content missing' });
   }
   try {
     const updatedPhoneBook = await Phonebook.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
-      context: "query",
+      context: 'query',
     });
-    console.log("updatedPhoneBook", updatedPhoneBook);
+    console.log('updatedPhoneBook', updatedPhoneBook);
     res.status(201).json(updatedPhoneBook);
   } catch (error) {
     next(error);
@@ -128,15 +105,15 @@ app.put("/api/persons/:personId", async (req, res, next) => {
 
 const errorHandler = (error, req, res, next) => {
   console.error(error.message);
-  if (error.name === "CastError") {
-    return res.status(400).json({ error: "malformatted id" });
-  } else if (error.name === "ValidationError") {
+  if (error.name === 'CastError') {
+    return res.status(400).json({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message });
   }
   next(error);
 };
 const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: "unknown endpoint" });
+  res.status(404).send({ error: 'unknown endpoint' });
 };
 app.use(unknownEndpoint);
 app.use(errorHandler);
