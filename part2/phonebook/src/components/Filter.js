@@ -1,19 +1,35 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import personService from "../services/personService";
 
-const Filter = ({ persons, setPersons }) => {
+const Filter = ({ setPersons }) => {
   const [filterName, setFilterName] = useState("");
-  const originalPersonsDeepCopy = useRef(persons && JSON.parse(JSON.stringify(persons)))
+  const [originalPersonLists, setOriginalPersonLists] = useState([]);
+
+  const getAllPersons = async () => {
+    try {
+      const result = await personService.getPersons();
+      setOriginalPersonLists(result);
+    } catch (error) {
+      console.error("errorGettingAllPersons", error);
+    }
+  };
+
+  useEffect(() => {
+    getAllPersons();
+  },[])
 
   const handleNameFilter = (event) => {
     const requestName = event.target.value;
     setFilterName(requestName);
     if (requestName) {
-      const filteredList = persons.filter(
+      const filteredList = originalPersonLists.filter(
         (person) => person.name.toLowerCase() === requestName.toLowerCase()
       );
-      filteredList.length
+      filteredList?.length
         ? setPersons(filteredList)
-        : setPersons(originalPersonsDeepCopy.current);
+        : setPersons(null);
+    } else {
+      setPersons(originalPersonLists);
     }
   };
 

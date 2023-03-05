@@ -22,7 +22,6 @@ const Person = ({
     } catch (error) {
       status = "error";
       message = "Error with removing data";
-      console.error("errorDeletingPerson", error);
     } finally {
       setStatus(status);
       setMessage(message);
@@ -71,14 +70,13 @@ const PersonForm = ({
     let status,
       message = "";
     try {
-      const result = await personService.addPerson(newPerson);
+      await personService.addPerson(newPerson);
       setUpdate(!update);
       status = "success";
       message = "Adding data successfully!";
     } catch (error) {
       status = "error";
       message = `${error}`;
-      console.log(error);
     } finally {
       setStatus(status);
       setMessage(message);
@@ -99,8 +97,7 @@ const PersonForm = ({
       message = "Updating data successfully!";
     } catch (error) {
       status = "error";
-      message = "Error with updating data";
-      throw new Error("errorUpdatingNewPerson", error);
+      message = `${error}`;
     } finally {
       setStatus(status);
       setMessage(message);
@@ -173,7 +170,7 @@ const Persons = ({
   };
   useEffect(() => {
     getInfo();
-  }, []);
+  }, [persons]);
 
   return (
     <div>
