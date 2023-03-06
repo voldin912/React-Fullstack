@@ -47,10 +47,32 @@ const mostBlogs = (blogs) => {
   return mostBlogsAuthor[0] || 0;
 };
 
+const mostLikes = (blogs) => {
+  const countedLikesByAuthor = Object.values(blogs.reduce((accumulator, current) => {
+    if(accumulator[current.author]) {
+      accumulator[current.author].likes += current.likes;
+    } else {
+      accumulator[current.author] = {
+        author:current.author,
+        likes:current.likes
+      };
+    }
+    return accumulator;
+  },{}));
+  console.log(countedLikesByAuthor);
+  const mostLikesAuthor = countedLikesByAuthor.reduce((accumulator, current) => {
+    if(!accumulator.length || accumulator[0].likes < current.likes) {
+      accumulator[0] = current;
+    }
+    return accumulator;
+  }, []);
 
+  return mostLikesAuthor[0] || 0;
+};
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 };
