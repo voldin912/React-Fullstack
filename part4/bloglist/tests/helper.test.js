@@ -115,5 +115,18 @@ describe('most favorite blog', () => {
         blogs: 3
       });
     });
+    test('of empty list is zero', () => {
+      const result = listHelper.mostBlogs([]);
+      expect(result).toBe(0);
+    });
+    test('when list has only one blog, equals itself', () => {
+      const result = listHelper.mostBlogs(listWithOneBlog);
+      expect(result).toEqual(
+        {
+          author: 'Edsger W. Dijkstra',
+          blogs:1
+        }
+      );
+    });
   });
 });

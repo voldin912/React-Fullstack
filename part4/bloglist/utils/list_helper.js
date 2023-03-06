@@ -36,7 +36,7 @@ const mostBlogs = (blogs) => {
     }
     return accumulator;
   }, {}));
-  console.log(countedBlogsByAuthor);
+
   const mostBlogsAuthor = countedBlogsByAuthor.reduce((accumulator, current) => {
     if (!accumulator.length || accumulator[0].blogs < current.blogs) {
       accumulator[0] = current;
@@ -46,6 +46,7 @@ const mostBlogs = (blogs) => {
 
   return mostBlogsAuthor[0] || 0;
 };
+
 
 module.exports = {
   dummy,
