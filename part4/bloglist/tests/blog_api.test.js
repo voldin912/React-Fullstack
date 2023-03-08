@@ -59,6 +59,16 @@ describe('Post A Blog', () => {
     const getResponse = await api.get('/api/blogs');
     expect(getResponse.body).toHaveLength(initialBlogs.length + 1);
   });
+
+  test('missing likes from the request', async () => {
+    const sampleBlog = {
+      title:'mising likes',
+      author:'Helena',
+      url:'https://github.com/giaongo',
+    };
+    const postResponse = await api.post('/api/blogs').send(sampleBlog).expect(201);
+    expect(postResponse.body.likes).toBeDefined();
+  });
 });
 
 afterAll(async() => {
