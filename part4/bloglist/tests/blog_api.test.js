@@ -4,7 +4,7 @@ const app = require('../app');
 
 const api = supertest(app);
 const Blog = require('../models/blogModel');
-const { blogsInDb } = require('./test_helper');
+const { blogsInDb, blogById } = require('./test_helper');
 
 const initialBlogs = [
   {
@@ -102,6 +102,19 @@ describe('Delete A Blog', () => {
     expect(listOfTitlesAfterDelete).not.toContain(firstBlogsToDelete.title);
   });
 },10000);
+
+describe('Updating A Blog', () => {
+  test('update a blog succeeds with 204', async() => {
+    const blogs = await blogsInDb();
+    const firstBlogsToUpdate = blogs[0];
+    const likesNumber = {
+      likes:10
+    };
+    await api.put('/api/blogs/' + firstBlogsToUpdate.id).send(likesNumber).expect(204);
+    const blogByIdAfterUpdate = await blogById(firstBlogsToUpdate.id);
+    expect(blogByIdAfterUpdate.likes).toBe(likesNumber.likes);
+  });
+});
 
 afterAll(async() => {
   await mongoose.connection.close();
