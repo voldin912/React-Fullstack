@@ -60,7 +60,7 @@ describe('Post A Blog', () => {
     expect(getResponse.body).toHaveLength(initialBlogs.length + 1);
   });
 
-  test('missing likes from the request', async () => {
+  test('missing likes become zero', async () => {
     const sampleBlog = {
       title:'mising likes',
       author:'Helena',
