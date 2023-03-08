@@ -69,6 +69,23 @@ describe('Post A Blog', () => {
     const postResponse = await api.post('/api/blogs').send(sampleBlog).expect(201);
     expect(postResponse.body.likes).toBeDefined();
   });
+
+  test('missing title throws error 400', async () => {
+    const sampleBlog = {
+      author:'giao',
+      likes:4,
+      url:'https://github.com/giaongo'
+    };
+    await api.post('/api/blogs').send(sampleBlog).expect(400);
+  });
+  test('missing url throws error 400', async() => {
+    const sampleBlog = {
+      title:'i am testing',
+      author:'giao',
+      likes:4,
+    };
+    await api.post('/api/blogs').send(sampleBlog).expect(400);
+  });
 });
 
 afterAll(async() => {
