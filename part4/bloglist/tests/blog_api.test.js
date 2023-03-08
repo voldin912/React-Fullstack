@@ -47,6 +47,20 @@ describe('Get All Blogs', () => {
   });
 });
 
+describe('Post A Blog', () => {
+  test('create and save a blog', async () => {
+    const sampleBlog = {
+      title:'How to draw a circle',
+      author:'Eugine',
+      url:'https://github.com/giaongo',
+      likes:0
+    };
+    await api.post('/api/blogs').send(sampleBlog).expect(201);
+    const getResponse = await api.get('/api/blogs');
+    expect(getResponse.body).toHaveLength(initialBlogs.length + 1);
+  });
+});
+
 afterAll(async() => {
   await mongoose.connection.close();
 });
