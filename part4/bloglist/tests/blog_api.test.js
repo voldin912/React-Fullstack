@@ -40,6 +40,11 @@ describe('Get All Blogs', () => {
     const response = await api.get('/api/blogs');
     expect(response.body).toHaveLength(initialBlogs.length);
   },);
+
+  test('returned unique identidier in right format', async () => {
+    const response = await api.get('/api/blogs');
+    expect(response.body[0].id).toBeDefined();
+  });
 });
 
 afterAll(async() => {
