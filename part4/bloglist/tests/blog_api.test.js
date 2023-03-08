@@ -4,6 +4,7 @@ const app = require('../app');
 
 const api = supertest(app);
 const Blog = require('../models/blogModel');
+const { blogsInDb } = require('./test_helper');
 
 const initialBlogs = [
   {
@@ -87,6 +88,20 @@ describe('Post A Blog', () => {
     await api.post('/api/blogs').send(sampleBlog).expect(400);
   });
 });
+
+describe('Delete A Blog', () => {
+  test('delete a blog succeeds with 204', async() => {
+    const blogs = await blogsInDb();
+    const firstBlogsToDelete = blogs[0];
+    await api.delete('/api/blogs/' + firstBlogsToDelete.id).expect(204);
+
+    const allBlogsAfterDelete = await blogsInDb();
+    expect(allBlogsAfterDelete).toHaveLength(initialBlogs.length - 1);
+
+    const listOfTitlesAfterDelete = allBlogsAfterDelete.map(blog => blog.title);
+    expect(listOfTitlesAfterDelete).not.toContain(firstBlogsToDelete.title);
+  });
+},10000);
 
 afterAll(async() => {
   await mongoose.connection.close();
