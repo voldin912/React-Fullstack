@@ -1,4 +1,5 @@
 const Blog = require('../models/blogModel');
+const User = require('../models/userModel');
 
 const blogsInDb = async () => {
   try {
@@ -16,4 +17,12 @@ const blogById = async (id) => {
     console.error('errorGettingBlogById', error);
   }
 };
-module.exports = { blogsInDb, blogById };
+const usersInDb = async () => {
+  try {
+    const users = await User.find({});
+    return users.map(user => user.toJSON());
+  } catch (error) {
+    console.error('errorGettingUsers', error);
+  }
+};
+module.exports = { blogsInDb, blogById, usersInDb };
