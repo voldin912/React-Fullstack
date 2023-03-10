@@ -56,7 +56,6 @@ describe('Post A User', () => {
     };
     await api.post('/api/users').send(sampleUser).expect(400);
   });
-
 });
 
 afterAll(async() => {

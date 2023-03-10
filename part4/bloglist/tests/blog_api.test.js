@@ -4,7 +4,7 @@ const app = require('../app');
 
 const api = supertest(app);
 const Blog = require('../models/blogModel');
-const { blogsInDb, blogById } = require('./test_helper');
+const { blogsInDb, blogById, usersInDb } = require('./test_helper');
 
 const initialBlogs = [
   {
@@ -56,10 +56,15 @@ describe('Post A Blog', () => {
       url:'https://github.com/giaongo',
       likes:0
     };
+    const allUsers = await usersInDb();
     await api.post('/api/blogs').send(sampleBlog).expect(201);
     const getResponse = await api.get('/api/blogs');
+    const newestBlog = getResponse.body[getResponse.body.length - 1];
     expect(getResponse.body).toHaveLength(initialBlogs.length + 1);
-  });
+    expect(newestBlog.user.username).toBe(allUsers[0].username);
+    const getUsers = await api.get('/api/users');
+    expect(getUsers.body[0].blogs[getUsers.body[0].blogs.length - 1].title).toContain(sampleBlog.title);
+  });1;
 
   test('missing likes become zero', async () => {
     const sampleBlog = {
