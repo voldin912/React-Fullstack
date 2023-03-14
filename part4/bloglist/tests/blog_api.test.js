@@ -4,7 +4,7 @@ const app = require('../app');
 
 const api = supertest(app);
 const Blog = require('../models/blogModel');
-const { blogsInDb, blogById } = require('./test_helper');
+const { blogsInDb, blogById, usersInDb } = require('./test_helper');
 
 const initialBlogs = [
   {
@@ -21,11 +21,18 @@ const initialBlogs = [
   }
 ];
 
+const newUser = {
+  username:'TestUser',
+  name: 'test',
+  password:'test123'
+};
+
 beforeEach(async () => {
   try {
     await Blog.deleteMany({});
     const blogObjects = initialBlogs.map(blog => new Blog(blog));
     await Promise.all(blogObjects.map(async (blog) => await blog.save()));
+    await api.post('/api/users').send(newUser);
   } catch (error) {
     console.error('errorInitialisingTestDatabase', error);
   }
@@ -56,11 +63,34 @@ describe('Post A Blog', () => {
       url:'https://github.com/giaongo',
       likes:0
     };
-    await api.post('/api/blogs').send(sampleBlog).expect(201);
-    const getResponse = await api.get('/api/blogs');
+    const loggedinUser = {
+      username:'TestUser',
+      password: 'test123'
+    };
+    const result = await api.post('/api/login').send(loggedinUser);
+    const token = result.body.token;
+    await api.post('/api/blogs').send(sampleBlog)
+      .set('Authorization', 'Bearer ' + token)
+      .expect(201);
+    const getResponse = await api.get('/api/blogs').set('Authorization', 'Bearer ' + token);
+    const newestBlog = getResponse.body[getResponse.body.length - 1];
     expect(getResponse.body).toHaveLength(initialBlogs.length + 1);
+    expect(newestBlog.user.username).toBe(loggedinUser.username);
+    const getUsers = await api.get('/api/users');
+    const newestUser = getUsers.body[getUsers.body.length - 1];
+    expect(newestUser.blogs[newestUser.blogs.length - 1].title).toContain(sampleBlog.title);
   });
 
+  test('missing token throws 401', async () => {
+    const sampleBlog = {
+      title:'How to draw a circle',
+      author:'Eugine',
+      url:'https://github.com/giaongo',
+      likes:0
+    };
+    await api.post('/api/blogs').send(sampleBlog)
+      .expect(401);
+  });
   test('missing likes become zero', async () => {
     const sampleBlog = {
       title:'mising likes',
@@ -87,6 +117,7 @@ describe('Post A Blog', () => {
     };
     await api.post('/api/blogs').send(sampleBlog).expect(400);
   });
+
 });
 
 describe('Delete A Blog', () => {

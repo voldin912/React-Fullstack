@@ -1,26 +1,38 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blogModel');
+require('express-async-errors');
 
 blogRouter.get('/', async (request,response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user', { username:1, name:1 });
   response.status(201).json(blogs);
 });
 
 blogRouter.post('/', async (request,response) => {
   const blogToAdd = request.body;
+  const user = request.user;
   if(!blogToAdd.title || !blogToAdd.url) {
     return response.status(400).end();
   }
   blogToAdd.likes = blogToAdd.likes || 0 ;
-  const blog = new Blog(request.body);
+  const updatedUserInfoBlog = { ...request.body,user: user._id };
+
+  const blog = new Blog(updatedUserInfoBlog);
   const result = await blog.save();
+  user.blogs = user.blogs.concat(result._id);
+  await user.save();
   response.status(201).json(result);
 });
 
 blogRouter.delete('/:id', async(request, response) => {
   const blogIdToDelete = request.params.id;
-  await Blog.findByIdAndRemove(blogIdToDelete);
-  response.status(204).end();
+  const user = request.user;
+  const blog = await Blog.findById(blogIdToDelete);
+  if(user._id.toString() === blog.user.toString()) {
+    await Blog.findByIdAndRemove(blogIdToDelete);
+    return response.status(201).json({ message: 'deleted successfully' });
+  } else {
+    return response.status(401).json({ error: 'Unauthorized user' });
+  }
 });
 
 blogRouter.put('/:id', async(request, response) => {

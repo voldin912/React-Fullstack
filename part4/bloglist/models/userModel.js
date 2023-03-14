@@ -11,7 +11,11 @@ const userSchema = new mongoose.Schema({
   hashedPassword: {
     type:String,
     required:true
-  }
+  },
+  blogs:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Blog'
+  }]
 });
 userSchema.plugin(uniqueValidator,  { message: 'Error, expected {PATH} to be unique.' });
 userSchema.set('toJSON', {
