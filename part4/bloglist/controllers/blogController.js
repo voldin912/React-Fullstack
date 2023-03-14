@@ -13,7 +13,6 @@ blogRouter.post('/', async (request,response) => {
   if(!blogToAdd.title || !blogToAdd.url) {
     return response.status(400).end();
   }
-  console.log('loggedin user is', user);
   blogToAdd.likes = blogToAdd.likes || 0 ;
   const updatedUserInfoBlog = { ...request.body,user: user._id };
 
