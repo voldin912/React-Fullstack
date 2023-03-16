@@ -1,5 +1,5 @@
 # Fullstack-Open-2023
-This contains list of exercises' solution for Fullstack open course 2023
+ This contains list of exercises' solution for Fullstack open course 2023
 
 * part 0:  [Fundamentals of Web apps](https://fullstackopen.com/en/part0)
 * part 1: [Introduction to React](https://fullstackopen.com/en/part1)
